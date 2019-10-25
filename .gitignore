@@ -1,9 +1,11 @@
 .DS_Store
 node_modules
 /dist
+ssl
 
 # local env files
-.env.local
+.env
+.env.*
 .env.*.local
 
 # Log files
