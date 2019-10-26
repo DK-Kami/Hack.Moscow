@@ -7,8 +7,8 @@
     <v-toolbar-items>
       <v-btn depressed class="mx-3" to="/">Общее</v-btn>
       <v-btn depressed class="mx-3" to="/regions">Регионы</v-btn>
+      <v-btn depressed class="mx-3" to="/deputats">Депутаты</v-btn>
       <v-btn depressed class="mx-3" to="/compare">Сравнение</v-btn>
-      <!-- <v-btn depressed class="mx-3" to="/prognose">Прогнозирование</v-btn> -->
       <!-- <v-btn depressed class="mx-3" to="/n-tab">N-вкладка</v-btn> -->
     </v-toolbar-items>
   </v-toolbar>
