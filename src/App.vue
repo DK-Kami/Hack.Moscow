@@ -2,10 +2,11 @@
   <div id="app">
     <v-app>
       <notification />
-      <!-- <the-toolbar-app /> -->
+      <the-toolbar-app />
 
       <v-content>
         <v-container class="pa-0 pt-9 fill-height" fluid>
+          <!-- <scroll-button class="scroll-button" /> -->
           <router-view />
         </v-container>
       </v-content>
@@ -14,13 +15,15 @@
 </template>
 
 <script>
-// import TheToolbarApp from '@/components/layout/TheToolbarApp';
+import TheToolbarApp from '@/components/layout/TheToolbarApp';
+import ScrollButton from '@/components/layout/ScrollButton';
 import Notification from '@/components/Notification';
 
 export default {
   name: 'App',
   components: {
-    // TheToolbarApp,
+    TheToolbarApp,
+    ScrollButton,
     Notification,
   },
 };
