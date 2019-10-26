@@ -40,6 +40,9 @@ export default {
 .main-container
   display flex
 
+.cursor--pointer
+  cursor pointer
+
 .primary-shadow
   box-shadow 0px 4px 8px rgba(134, 220, 248, 0.6)
 </style>

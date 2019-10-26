@@ -2,10 +2,14 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import HighchartsVue from './plugins/highcharts';
 
 import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
+
+
+Vue.use(HighchartsVue);
 
 Vue.config.productionTip = false;
 
