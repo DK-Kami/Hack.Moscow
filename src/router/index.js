@@ -20,6 +20,11 @@ const routes = [
     component: () => import('@/views/ComparePage'),
   },
   {
+    name: 'DeputatPage',
+    path: '/deputats',
+    component: () => import('@/views/DeputatPage'),
+  },
+  {
     path: '/*',
     redirect: '/',
   },
