@@ -1,8 +1,23 @@
 <template>
   <v-layout>
-    <!-- <v-img :src="require('@/assets/map.png')">
-    </v-img> -->
-    <map-view :all-loading="allHidden" />
+    <v-slide-y-transition>
+      <v-layout v-if="isMap" style="position: fixed; z-index: 10000" class="mt-8">
+        <v-flex>
+          <v-layout class="headline" align-end>
+            Открыть <span class="primary--text cursor--pointer mx-2" @click="hideMap">статистику</span> по стране
+            <select-primary
+              v-model="selectedCountry"
+              :items="countries"
+              title-class="display-1"
+              item-value="code"
+              item-text="name"
+              with-border
+            />
+          </v-layout>
+        </v-flex>
+      </v-layout>
+    </v-slide-y-transition>
+    <map-view :all-loading="allHidden" :country="selectedCountry" />
 
     <v-fade-transition>
       <v-layout
@@ -12,54 +27,33 @@
         dark
         class="pa-12 statistic-layout"
       >
-        <v-slide-y-transition v-if="!isMap">
-          <v-flex xs2 class="pa-8 display-1 font-weight-light">
-            102 чиновника на 10 тыс. человек в <span class="display-2 primary--text">России</span> <v-img contain :src="require('@/assets/arrow.png')" />
+        <v-slide-y-transition>
+          <v-flex v-if="!isMap" xs2 class="pa-8 display-1 font-weight-light">
+            <v-layout align-end>
+              102 чиновника на 10 тыс. человек в стране
+              <select-primary
+                v-model="selectedCountry"
+                :items="countries"
+                title-class="display-2"
+                item-value="code"
+                item-text="name"
+                with-border
+              />
+            </v-layout>
           </v-flex>
         </v-slide-y-transition>
 
         <v-flex xs6>
-          <v-layout fill-height align-center class="mx-8">
-            <v-flex xs1 />
+          <v-layout fill-height align-center justify-space-around class="mx-8">
             <v-slide-x-transition>
               <v-flex xs5 v-if="!isMap">
-                <v-layout class="justify-end">
-                  <diagram value="41.7" />
-                </v-layout>
+                <deputat-grapfic />
               </v-flex>
             </v-slide-x-transition>
 
-            <v-fade-transition>
-              <v-flex xs1 class="display-3" v-if="!isMap">=</v-flex>
-            </v-fade-transition>
-
             <v-slide-x-reverse-transition>
               <v-flex xs4 v-if="!isMap">
-                <v-layout column>
-                  <v-flex class="display-1 font-weight-light text-center" style="width: 500px">
-                    <v-layout wrap justify-center>
-                      <v-flex xs12>Налог на добычу полезных ископаемых<v-divider /></v-flex>
-                      <v-divider vertical style="height: 80px; margin-left: 90px;" />
-                    </v-layout>
-                  </v-flex>
-                  
-                  <v-flex>
-                    <v-layout>
-                      <div class="display-2 font-weight-light">4,78 трлн руб.</div>
-                      <!-- <v-divider class="mt-7" />
-                      <div class="display-1 font-weight-light"><v-divider vertical /> 8% ВВП</div> -->
-                    </v-layout>
-                  </v-flex>
-
-                  <v-flex class="display-1 font-weight-light text-center mt-5" style="width: 500px">
-                    <v-layout wrap justify-center>
-                      <v-divider vertical style="height: 80px; margin-right: 97px;" />
-                      <v-flex xs12>
-                        <v-divider /> Вывозные таможенные пошлины на природный газ
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
+                <deputat-car-grapfic />
               </v-flex>
             </v-slide-x-reverse-transition>
           </v-layout>
@@ -72,6 +66,7 @@
               <v-btn
                 class="map-button"
                 outlined
+                primary
                 light
                 @click="openMap"
               >Карта</v-btn>
@@ -84,19 +79,31 @@
 </template>
 
 <script>
-import Diagram from '@/components/Diagram';
+import DeputatCarGrapfic from '@/components/charts/DeputatCarGrapfic';
+import DeputatGrapfic from '@/components/charts/DeputatGrapfic';
+import SelectPrimary from '@/components/SelectPrimary';
 import MapView from './Map';
 
 export default {
   name: 'mainPage',
-  components: { Diagram, MapView },
+  components: {
+    DeputatCarGrapfic,
+    DeputatGrapfic,
+    SelectPrimary,
+    MapView,
+  },
   data: () => ({
     isMap: false,
     allHidden: false,
+
+    selectedCountry: 'RU',
   }),
   computed: {
     year() {
       return new Date().getFullYear();
+    },
+    countries() {
+      return this.$store.getters.getCountries;
     },
   },
   methods: {
@@ -106,6 +113,12 @@ export default {
         this.allHidden = true;
       }, 350);
     },
+    hideMap() {
+      this.allHidden = false;
+      setTimeout(() => {
+        this.isMap = false;
+      }, 150);
+    }
   },
 };
 </script>
@@ -119,7 +132,9 @@ export default {
     height: 60px !important;
     border-radius: 0;
     font-size: 19px !important;
-    border: 2px solid black;
+    border: 2px solid #FF4546;
+    color: #FF4546 !important;
+    box-shadow: 0px 1px 2px rgba(219, 31, 32, 0.4);
   }
 
   .statistic-layout {
