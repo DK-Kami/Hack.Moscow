@@ -48,38 +48,47 @@ export default {
         quality: 3
       })
         .then(async result => {
-          // const regions = (await axios.get('http://localhost:8000/api/regions')).data;
-          console.log(result);
+          const regions = (await axios.get('http://localhost:5000/api/regions')).data.rows;
 
           result.features.forEach(feature => {
             var iso = feature.properties.iso3166;
             feature.id = iso;
-            // const data = regions.find(r => r.region === feature.properties.name);
+            const region = regions.filter(r => r.key[0].toString().toLowerCase() === feature.properties.name.toString().toLowerCase());
 
-            // feature.properties.balloonContentHeader = feature.properties.name;
-            // if (data) {
-            //   const template =
-            //   `
-            //     <div>Налог нефтегаза: ${data.nalog_ng}</div>
-            //     <div>Доход по акцизам (Дизель): ${data.income_akz_dizel}</div>
-            //     <div>Доход по акцизам (Нефть): ${data.income_akz_machin_oil}</div>
-            //     <div>Доход по акцизам (Бензин): ${data.income_akz_macine_benz}</div>
-            //   `;
-            //   if (!!Number(data.akz_machine_benz)) {
-            //     template += `<div>Акцизы (Бензин): ${data.akz_machine_benz}</div>`
-            //   }
-            //   if (!!Number(data.akz_dizel)) {
-            //     template += `<div>Акцизы (Дизель): ${data.akz_dizel}</div>`
-            //   }
-            //   if (!!Number(data.akz_motor_oil)) {
-            //     template += `<div>Акцизы (Машинное масло): ${data.akz_motor_oil}</div>`
-            //   }
-            //   feature.properties.balloonContentBody = template;
-            // }
+            feature.properties.balloonContentHeader = feature.properties.name;
+            if (region.length) {
+              const incomes = region.find(r => r.key[1] === 'incomes');
+              const real_estates = region.find(r => r.key[1] === 'real_estates');
+              const vehicles = region.find(r => r.key[1] === 'vehicles');
+
+              const template =
+              `
+                <table>
+                  <tr>
+                    <td>Количество должностых лиц, имеющих доход:</td>
+                    <td style="padding-left: 5px">${incomes.value.count} чел.</td>
+                  </tr>
+                  <tr>
+                    <td>Полученный доход по субъекту:</td>
+                    <td style="padding-left: 5px">${Number(parseFloat(incomes.value.sum).toFixed(2)).toLocaleString('ru')} руб.</td>
+                  </tr>
+                  <tr>
+                    <td>Недвижимость должностных лиц:</td>
+                    <td style="padding-left: 5px">${Number(parseFloat(real_estates.value.sum).toFixed(2)).toLocaleString('ru')} км.<sup>2</sup></td>
+                  </tr>
+                  <tr>
+                    <td>Транспортные средства должностных лиц (кол):</td>
+                    <td style="padding-left: 5px">${Number(parseFloat(vehicles.value.sum).toFixed(2)).toLocaleString('ru')}</td>
+                  </tr>
+                </table>
+              `;
+              feature.properties.balloonContentBody = template;
+            }
+            else console.log(feature.properties.name);
 
             feature.options = {
-              fillColor: '#000000',
-              strokeColor: '#000000',
+              fillColor: '#333',
+              strokeColor: '#000',
               opacity: 0.2,
               strokeWidth: 2,
             }
@@ -101,7 +110,8 @@ export default {
 
       this.objectManager.objects.each(obj => {
         this.objectManager.objects.setObjectOptions(obj.id, {
-          opacity: id === obj.id ? 0.5 : 0.2,
+          opacity: id === obj.id ? 0.4 : 0.2,
+          strokeColor: id === obj.id ? '#da1f1f' : '#000',
         });
       });
 

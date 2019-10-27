@@ -134,7 +134,7 @@ export default {
     font-size: 19px !important;
     border: 2px solid #FF4546;
     color: #FF4546 !important;
-    box-shadow: 0px 1px 2px rgba(219, 31, 32, 0.4);
+    box-shadow: 0px 1px 2px #da1f1f66;
   }
 
   .statistic-layout {
