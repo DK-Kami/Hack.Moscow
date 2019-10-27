@@ -7,25 +7,17 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    companies: [],
-    regions: [],
+    rowsPerPage: {
+      cards: [6, 12, 24, 48, { text: "$vuetify.dataIterator.rowsPerPageAll", value: -1 }],
+      tables: [10, 25, 50, 100, { text: "$vuetify.dataIterator.rowsPerPageAll", value: -1 }],
+    },
   },
   mutations: {
-    SET_COMPANIES: (state, companies) => state.companies = companies,
-    SET_REGIONS: (state, regions) => state.regions = regions,
   },
   actions: {
-    async loadRegions({ commit }) {
-
-      commit('SET_COMPANIES', companies);
-      commit('SET_REGIONS', regions);
-
-      return { companies, regions };
-    }
   },
   getters: {
-    getCompanies: state => state.companies,
-    getRegions: state => state.regions,
+    getRowsPerPage: state => state.rowsPerPage,
   },
   modules,
 });
