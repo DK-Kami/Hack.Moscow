@@ -43,6 +43,9 @@ export default {
 .cursor--pointer
   cursor pointer
 
+.custom-elevation
+  box-shadow 0 3px 10px 0 rgba(0, 0, 0, 0.07) !important
+
 .primary-shadow
   box-shadow 0px 4px 8px rgba(134, 220, 248, 0.6)
 </style>
