@@ -35,6 +35,7 @@ export default {
 
     settings: {
       restrictMapArea: [[10, 10], [85,-160]],
+      duration: 1000,
     },
   }),
   methods: {
@@ -65,20 +66,20 @@ export default {
               `
                 <table>
                   <tr>
-                    <td>Количество должностых лиц, имеющих доход:</td>
-                    <td style="padding-left: 5px">${incomes.value.count} чел.</td>
+                    <td style="font-size: 14px">Количество должностых лиц, имеющих доход:</td>
+                    <td style="padding-left: 2px">${incomes.value.count} чел.</td>
                   </tr>
                   <tr>
-                    <td>Полученный доход по субъекту:</td>
-                    <td style="padding-left: 5px">${Number(parseFloat(incomes.value.sum).toFixed(2)).toLocaleString('ru')} руб.</td>
+                    <td style="font-size: 14px">Полученный доход по субъекту:</td>
+                    <td style="padding-left: 2px">${Number(parseFloat(incomes.value.sum).toFixed(2)).toLocaleString('ru')} руб.</td>
                   </tr>
                   <tr>
-                    <td>Недвижимость должностных лиц:</td>
-                    <td style="padding-left: 5px">${Number(parseFloat(real_estates.value.sum).toFixed(2)).toLocaleString('ru')} км.<sup>2</sup></td>
+                    <td style="font-size: 14px">Недвижимость должностных лиц:</td>
+                    <td style="padding-left: 2px">${Number(parseFloat(real_estates.value.sum).toFixed(2)).toLocaleString('ru')} км.<sup>2</sup></td>
                   </tr>
                   <tr>
-                    <td>Транспортные средства должностных лиц (кол):</td>
-                    <td style="padding-left: 5px">${Number(parseFloat(vehicles.value.sum).toFixed(2)).toLocaleString('ru')}</td>
+                    <td style="font-size: 14px">Транспортные средства должностных лиц (кол):</td>
+                    <td style="padding-left: 2px">${Number(parseFloat(vehicles.value.sum).toFixed(2)).toLocaleString('ru')}</td>
                   </tr>
                 </table>
               `;
@@ -87,8 +88,8 @@ export default {
             else console.log(feature.properties.name);
 
             feature.options = {
-              fillColor: '#333',
-              strokeColor: '#000',
+              fillColor: '#FF4546',
+              strokeColor: '#FF4546',
               opacity: 0.2,
               strokeWidth: 2,
             }
@@ -97,9 +98,9 @@ export default {
           this.objectManager.add(result);
           this.objectManager.objects.events.add('click', this.handleClick);
           this.map.geoObjects.add(this.objectManager)
-          setTimeout(() => {
-            this.map.setBounds(this.objectManager.getBounds());
-          }, 0);
+          // setTimeout(() => {
+          //   this.map.setBounds(this.objectManager.getBounds());
+          // }, 0);
         });
     },
 
@@ -110,12 +111,14 @@ export default {
 
       this.objectManager.objects.each(obj => {
         this.objectManager.objects.setObjectOptions(obj.id, {
+          strokeColor: id === obj.id ? '#da1f1f' : '#FF4546',
           opacity: id === obj.id ? 0.4 : 0.2,
-          strokeColor: id === obj.id ? '#da1f1f' : '#000',
         });
       });
 
-      this.map.setCenter(coords);
+      this.map.setCenter(coords, this.map.getZoom(), {
+        duration: 1000,
+      });
     },
   },
   watch: {
@@ -138,6 +141,6 @@ export default {
     margin-top: 28px;
   }
   .ymaps-2-1-74-ground-pane {
-    filter: grayscale(100);
+    filter: grayscale(150);
   }
 </style>
