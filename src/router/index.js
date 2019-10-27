@@ -25,6 +25,12 @@ const routes = [
     component: () => import('@/views/DeputatPage'),
   },
   {
+    name: 'DeputatProfile',
+    path: '/deputats/:id',
+    props: route => ({ id: route.params.id }),
+    component: () => import('@/views/DeputatProfile'),
+  },
+  {
     path: '/*',
     redirect: '/',
   },

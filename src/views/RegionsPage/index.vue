@@ -62,7 +62,7 @@
               :value="tab.value"
             >
               <v-layout mt-7 justify-center wrap>
-                <v-flex xs9>
+                <v-flex xs9 @click="openProfile(top.id)" class="cursor--pointer">
                   <div class="display-1 font-weight-light text-center">{{ top.name }}</div>
                   <div class="title font-weight-light grey--text text-center">{{ top.office }}</div>
                 </v-flex>
@@ -80,7 +80,7 @@
 
                 <v-flex xs12>
                   <v-list two-line>
-                    <v-list-item :key="`data-${index}`">
+                    <v-list-item>
                       <v-list-item-content>
                         <v-list-item-title>ФИО</v-list-item-title>
                       </v-list-item-content>
@@ -92,7 +92,7 @@
                     <v-divider />
 
                     <template v-for="(elem, index) in selected">
-                      <v-list-item :key="`data-${index}`">
+                      <v-list-item v-ripple class="cursor--pointer" :key="`data-${index}`" @click="openProfile(elem.id)">
                         <v-list-item-content>
                           <v-list-item-title>{{ elem.name }}</v-list-item-title>
                           <v-list-item-subtitle>{{ elem.office }}</v-list-item-subtitle>
@@ -287,6 +287,9 @@ export default {
         }
       })
     },
+    openProfile(id) {
+      this.$router.push('/deputats/' + id);
+    }
   },
   watch: {
     tab() {
