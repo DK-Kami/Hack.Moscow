@@ -39,7 +39,7 @@ export default {
     person: null,
     chartOptions: {
       chart: {
-        type: 'column',
+        type: 'bar',
         backgroundColor: 'transparent',
         height: '40%',
       },
@@ -55,7 +55,15 @@ export default {
       },
       yAxis: {
         title: {
-          text: ''
+          text: '',
+        },
+        min: 0,
+        stackLabels: {
+          enabled: true,
+          style: {
+            fontWeight: 'bold',
+            color: 'gray'
+          }
         }
 
       },
@@ -66,13 +74,16 @@ export default {
       },
       plotOptions: {
         series: {
-          borderWidth: 0,
-          dataLabels: {
-            enabled: false,
-            format: '{point.y:.1f}%'
-          }
+          stacking: 'normal'
+        },
+        column: {
+            stacking: 'normal',
+            dataLabels: {
+                enabled: true
+            }
         }
       },
+      
 
       tooltip: {
         headerFormat: '<span style="font-size:11px">{series.year}</span><br>',
@@ -81,11 +92,9 @@ export default {
 
       series: [{
         name: "Личные",
-        colorByPoint: false,
         data: []
       }, {
         name: "Родственники",
-        colorByPoint: false,
         data: []
       }],
     }
