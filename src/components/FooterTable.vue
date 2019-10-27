@@ -20,34 +20,34 @@
         </template>
 
         <v-list>
-          <v-list-tile
+          <v-list-item
             v-ripple
             @click="toggleAll"
           >
-            <v-list-tile-action>
+            <v-list-item-action>
               <v-icon color="primary" class="mr-3">
                 {{ selectAllIcon }}
               </v-icon>
-            </v-list-tile-action>
+            </v-list-item-action>
 
-            <v-list-tile-title>Выбрать все</v-list-tile-title>
-          </v-list-tile>
+            <v-list-item-title>Выбрать все</v-list-item-title>
+          </v-list-item>
 
           <template v-for="header in headers">
-            <v-list-tile
+            <v-list-item
               v-if="header.text"
               :key="header.value"
               v-ripple
               @click="toggleHeader(header)"
             >
-              <v-list-tile-action>
+              <v-list-item-action>
                 <v-icon color="primary" class="mr-3">
                   {{ currentIcon(header.isSelected) }}
                 </v-icon>
-              </v-list-tile-action>
+              </v-list-item-action>
 
-              <v-list-tile-title>{{ header.text }}</v-list-tile-title>
-            </v-list-tile>
+              <v-list-item-title>{{ header.text }}</v-list-item-title>
+            </v-list-item>
           </template>
         </v-list>
       </v-menu>

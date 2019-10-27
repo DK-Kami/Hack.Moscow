@@ -1,17 +1,28 @@
 <template>
   <v-layout wrap justify-center>
-    <v-flex xs7 class="text-center ml-12">
-      <select-primary
-        v-model="selectedData"
-        :items="data"
-        title-class="headline"
-        item-value="value"
-        item-text="name"
-      />
+    <v-flex v-if="loading" shrink>
+      <v-progress-circular
+        :size="270"
+        :width="4"
+        color="#ff7878"
+        indeterminate
+      ></v-progress-circular>
     </v-flex>
-    <v-flex xs12>
-      <highcharts :options="chartOptions"></highcharts>
-    </v-flex>
+
+    <template v-else>
+      <v-flex xs7 class="text-center ml-12">
+        <select-primary
+          v-model="selectedData"
+          :items="data"
+          title-class="headline"
+          item-value="value"
+          item-text="name"
+        />
+      </v-flex>
+      <v-flex xs12>
+        <highcharts :options="chartOptions"></highcharts>
+      </v-flex>
+    </template>
   </v-layout>
 </template>
 
@@ -23,14 +34,16 @@ import axios from 'axios';
 export default {
   name: 'DeputatCarGrapfic',
   created() {
+    console.log('da');
     this.loadData();
   },
   components: { SelectPrimary },
   data: vm => ({
-    selectedData: 'car',
+    selectedData: 'possessions',
+    loading: true,
     data: [
-      { name: 'Недвижимость (км кв.)', value: 'house' },
-      { name: 'Машины (кол.)', value: 'car' },
+      { name: 'Недвижимость (км кв.)', value: 'possessions' },
+      { name: 'Машины (кол.)', value: 'cars' },
     ],
     chartOptions: {
       chart: {
@@ -41,10 +54,10 @@ export default {
       title: {
         text: ''
       },
-      // tooltip: {
-      //   useHTML: true,
-      //   pointFormat: '<b>{point.name}:</b> {point.value}<sub>2</sub>'
-      // },
+      tooltip: {
+        useHTML: true,
+        pointFormat: '<b>{point.name}:</b> {point.trueValue}'
+      },
       plotOptions: {
         packedbubble: {
           minSize: '20%',
@@ -80,31 +93,32 @@ export default {
       series: [{
         color: '#FF9898',
         name: '',
-        data: [{
-          name: "Australia",
-          value: 409.4
-        },
-        {
-          name: "New Zealand",
-          value: 55
-        },
-        {
-          name: "Papua New Guinea",
-          value: 7.1
-        }]
+        data: []
       }],
     },
   }),
   methods: {
     async loadData() {
-      // const data = (await axios.get('http://admin:vbyjvtn@tseluyko.ru:5984/mim/_design/index/_view/money_by_year?inclusive_end=true&start_key=[true,1998]&end_key=[true,2019]&include_docs=true')).data;
-      // console.log(data);
+      this.loading = true;
+      this.chartOptions.series[0].data = [];
+
+      console.log(this.selectedData);
+
+      const data = (await axios.get('http://localhost:5000/api/metric/' + this.selectedData)).data.rows;
+      data.sort((x, y) => x.value[1] < y.value[1] ? 1 : -1).splice(0, 50).forEach(elem => {
+        this.chartOptions.series[0].data.push({
+          trueValue: Number(parseFloat(elem.value[1]).toFixed(2)).toLocaleString('ru'),
+          value: elem.value[1] * (this.selectedData === 'cars' ? 11 : 0.00001),
+          name: elem.value[0],
+        });
+      });
+      this.loading = false;
     }
   },
   watch: {
     selectedData() {
       this.loadData();
-    }
-  }
+    },
+  },
 };
 </script>

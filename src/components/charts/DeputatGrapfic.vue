@@ -1,17 +1,28 @@
 <template>
   <v-layout wrap justify-center>
-    <v-flex xs7 class="text-center ml-12 pl-12 pb-5">
-      <select-primary
-        v-model="selectedData"
-        :items="data"
-        title-class="headline"
-        item-value="value"
-        item-text="name"
-      />
+    <v-flex v-if="loading" shrink>
+      <v-progress-circular
+        :size="270"
+        :width="4"
+        color="#ff7878"
+        indeterminate
+      ></v-progress-circular>
     </v-flex>
-    <v-flex xs12>
-      <highcharts :options="chartOptions"></highcharts>
-    </v-flex>
+
+    <template v-else>
+      <v-flex xs7 class="text-center ml-12 pl-12 pb-5">
+        <select-primary
+          v-model="selectedData"
+          :items="data"
+          title-class="headline"
+          item-value="value"
+          item-text="name"
+        />
+      </v-flex>
+      <v-flex xs12>
+        <highcharts :options="chartOptions"></highcharts>
+      </v-flex>
+    </template>
   </v-layout>
 </template>
 
@@ -28,12 +39,14 @@ export default {
   components: { SelectPrimary },
   data: () => ({
     selectedData: true,
+    loading: true,
     data: [
       { name: 'Доходы с родственниками', value: true },
       { name: 'Доходы без родственников', value: false },
     ],
     chartOptions: {
       chart: {
+        type: 'column',
         backgroundColor: 'transparent',
         height: '70%',
       },
@@ -43,62 +56,64 @@ export default {
       subtitle: {
         text: ''
       },
-      colors: ['#FF4546'],
-
+      colors: ['#ff7878'],
+      xAxis: {
+        type: 'category'
+      },
       yAxis: {
         title: {
-          text: 'Доходы'
+          text: ''
         }
+
       },
       legend: {
-        enabled: false,
+        enabled: false
       },
-
       plotOptions: {
         series: {
-          label: {
-            connectorAllowed: true,
-          },
-          pointStart: 1998,
-        },
+          borderWidth: 0,
+          dataLabels: {
+            enabled: false,
+            format: '{point.y:.1f}%'
+          }
+        }
       },
 
-      series: [
-        {
-          marker: {
-            symbol: 'dot'
-          },
-          name: 'Доходы',
-          data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175, 23],
-        }
-      ],
+      tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.year}</span><br>',
+        pointFormat: '<span style="color:{point.color}">{point.year}</span>: <b>{point.y:.2f}</b> рублей<br/>'
+      },
 
-      responsive: {
-        rules: [{
-          condition: {
-            maxWidth: 500
-          },
-          chartOptions: {
-            legend: {
-              layout: 'horizontal',
-              align: 'center',
-              verticalAlign: 'bottom'
-            }
-          }
+      series: [{
+        name: "",
+        colorByPoint: false,
+        data: [{
+          name: "",
+          y: 62.74,
+          drilldown: "Chrome"
         }]
-      }
+      }],
     }
   }),
   methods: {
     async loadData() {
-      const data = (await axios.get('https://admin:vbyjvtn@tseluyko.ru:5984/mim/_design/index/_view/money_by_year?inclusive_end=true&start_key=[true,1998]&end_key=[true,2019]&include_docs=true')).data;
-      console.log(data);
+      this.loading = true;
+      this.chartOptions.series[0].data = [];
+      const data = (await axios.get(`http://localhost:5000/api/metric/money_by_year?inclusive_end=${this.selectedData}&start_key=[true,1998]&end_key=[true,2019]&include_docs=true`)).data.rows;
+      for (let year = 1998; year < 2020; year++) {
+        const dataForYear = data.filter(d => +d.key[1] === +year);
+        this.chartOptions.series[0].data.push({
+          y: dataForYear.reduce((summ, current) => summ + current.value, 0),
+          year,
+        });
+      }
+      this.loading = false;
     }
   },
   watch: {
     selectedData() {
       this.loadData();
-    }
-  }
+    },
+  },
 };
 </script>

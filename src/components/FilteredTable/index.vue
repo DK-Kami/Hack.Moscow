@@ -20,12 +20,12 @@
 
     <v-data-table
       :no-data-text="noDataText"
-      :select-all="selectAll"
+      :show-select="selectAll"
       :search="currentSearch"
       :items="filteredItems"
       :headers="headers"
       :loading="loading"
-      class="custom-elevation-2"
+      class="custom-elevation"
     >
       <v-progress-linear #progress color="blue" indeterminate />
 
