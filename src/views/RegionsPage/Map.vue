@@ -42,38 +42,13 @@ export default {
         quality: 3
       })
         .then(async result => {
-          // const regions = (await axios.get('http://localhost:8000/api/regions')).data;
-          console.log(result);
-
           result.features.forEach(feature => {
             var iso = feature.properties.iso3166;
             feature.id = iso;
-            // const data = regions.find(r => r.region === feature.properties.name);
-
-            // feature.properties.balloonContentHeader = feature.properties.name;
-            // if (data) {
-            //   const template =
-            //   `
-            //     <div>Налог нефтегаза: ${data.nalog_ng}</div>
-            //     <div>Доход по акцизам (Дизель): ${data.income_akz_dizel}</div>
-            //     <div>Доход по акцизам (Нефть): ${data.income_akz_machin_oil}</div>
-            //     <div>Доход по акцизам (Бензин): ${data.income_akz_macine_benz}</div>
-            //   `;
-            //   if (!!Number(data.akz_machine_benz)) {
-            //     template += `<div>Акцизы (Бензин): ${data.akz_machine_benz}</div>`
-            //   }
-            //   if (!!Number(data.akz_dizel)) {
-            //     template += `<div>Акцизы (Дизель): ${data.akz_dizel}</div>`
-            //   }
-            //   if (!!Number(data.akz_motor_oil)) {
-            //     template += `<div>Акцизы (Машинное масло): ${data.akz_motor_oil}</div>`
-            //   }
-            //   feature.properties.balloonContentBody = template;
-            // }
 
             feature.options = {
-              fillColor: '#000000',
-              strokeColor: '#000000',
+              fillColor: '#FF4546',
+              strokeColor: '#FF4546',
               opacity: 0.2,
               strokeWidth: 2,
             }
@@ -82,9 +57,9 @@ export default {
           this.objectManager.add(result);
           this.objectManager.objects.events.add('click', this.handleClick);
           this.map.geoObjects.add(this.objectManager)
-          setTimeout(() => {
-            this.map.setBounds(this.objectManager.getBounds());
-          }, 0);
+          // setTimeout(() => {
+          //   this.map.setBounds(this.objectManager.getBounds());
+          // }, 0);
         });
     },
 
@@ -95,13 +70,15 @@ export default {
 
       this.objectManager.objects.each(obj => {
         this.objectManager.objects.setObjectOptions(obj.id, {
-          opacity: id === obj.id ? 0.5 : 0.2,
+          strokeColor: id === obj.id ? '#da1f1f' : '#FF4546',
+          opacity: id === obj.id ? 0.4 : 0.2,
         });
       });
 
-      this.map.setCenter(coords);
-      console.log(geoObject);
-      this.$emit('select-region');
+      this.map.setCenter(coords, this.map.getZoom(), {
+        duration: 1000,
+      });
+      this.$emit('select-region', geoObject.properties.name);
     },
   },
   watch: {
@@ -124,6 +101,6 @@ export default {
     margin-top: 28px;
   }
   .ymaps-2-1-74-ground-pane {
-    filter: grayscale(100);
+    filter: grayscale(150);
   }
 </style>
