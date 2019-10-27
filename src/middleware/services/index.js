@@ -1,5 +1,5 @@
-/// import here
+import PersonService from './PersonService';
 
 export default {
-  /// export here
+  PersonService,
 };

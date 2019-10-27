@@ -57,7 +57,7 @@ class WebClient {
   }
 };
 
-const url = '';
+const url = 'http://localhost:5000/api/';
 const webclient = new WebClient(url);
 
 export default webclient;
